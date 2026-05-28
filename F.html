@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Reality of ADHD</title>
+    <style>
+        /* Modern Reset & Base Setup */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #030305;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            color: #ffffff;
+        }
+
+        /* Vertical Reel/Short Format */
+        .vertical-container {
+            width: 100%;
+            max-width: 480px;
+            height: 100dvh;
+            background: linear-gradient(180deg, #0a0c10, #020203);
+            position: relative;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            scroll-snap-type: y mandatory;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.9);
+            scrollbar-width: none;
+        }
+
+        .vertical-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Ambient Dynamic Lighting */
+        .ambient-light {
+            position: fixed;
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(150, 50, 255, 0.15) 0%, rgba(0,0,0,0) 70%);
+            filter: blur(50px);
+            z-index: 0;
+            pointer-events: none;
+            transition: background 1.2s ease-in-out;
+            animation: pulseLight 4s infinite alternate;
+        }
+
+        .ambient-light.bottom {
+            top: auto;
+            bottom: -5%;
+            width: 500px;
+            height: 300px;
+            opacity: 0.6;
+        }
+
+        @keyframes pulseLight {
+            0% { transform: translateX(-50%) scale(0.9); opacity: 0.7; }
+            100% { transform: translateX(-50%) scale(1.1); opacity: 1; }
+        }
+
+        /* Scene Layout */
+        .scene {
+            height: 100dvh;
+            width: 100%;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 2.5rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Text Styling & Scroll Animations */
+        .text-content {
+            font-size: 1.45rem;
+            line-height: 1.5;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 2;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.9);
+        }
+
+        .scene.visible .text-content {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .quote-style {
+            font-style: italic;
+            font-size: 1.6rem;
+            color: #d1d5db;
+        }
+
+        .highlight {
+            font-weight: 800;
+            transition: color 1s ease, text-shadow 1s ease;
+        }
+
+        /* Interactive Cartoon Emojis */
+        .cartoon-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: scale(0) rotate(-15deg) translateY(20px);
+            transition: all 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition-delay: 0.15s;
+            z-index: 2;
+            filter: drop-shadow(0 15px 20px rgba(0,0,0,0.6));
+        }
+
+        .scene.visible .cartoon-icon {
+            opacity: 1;
+            transform: scale(1) rotate(0deg) translateY(0);
+            animation: floatIcon 3.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatIcon {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-12px); }
+        }
+
+        /* Floating Background Particles */
+        .particle-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .floating-emoji {
+            position: absolute;
+            bottom: -50px;
+            font-size: 1.5rem;
+            animation: floatUp 7s linear forwards;
+            opacity: 0.3;
+            filter: grayscale(0.2);
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.7) rotate(0deg); opacity: 0.4; }
+            100% { transform: translateY(-110vh) scale(1.3) rotate(120deg); opacity: 0; }
+        }
+
+        /* Scroll Hint */
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0.7;
+            font-size: 1.5rem;
+            animation: bounce 2s infinite;
+            z-index: 3;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-15px) translateX(-50%); }
+            60% { transform: translateY(-7px) translateX(-50%); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="ambient-light" id="topLight"></div>
+    <div class="ambient-light bottom" id="bottomLight"></div>
+
+    <div class="vertical-container" id="container">
+        <div class="particle-layer" id="particles"></div>
+
+        <div class="scene" data-color="150, 50, 255">
+            <div class="cartoon-icon">🧠🌡️</div>
+            <div class="text-content quote-style">
+                "ADHD is a long fever—<br><br>
+                too small to be concerned about, yet <span class="highlight">too large to be tolerated.</span>"
+            </div>
+            <div class="scroll-hint">👇</div>
+        </div>
+
+        <div class="scene" data-color="0, 255, 120">
+            <div class="cartoon-icon">👦🌟</div>
+            <div class="text-content">
+                Ram was an energetic, charismatic person. Widely expected to be the <span class="highlight">highest-scoring student</span> in the state board.<br><br>
+                During childhood, he was always punctual and consistently finished in the top ranks.
+            </div>
+        </div>
+
+        <div class="scene" data-color="255, 50, 50">
+            <div class="cartoon-icon">📉😟</div>
+            <div class="text-content">
+                But things changed when he reached the 10th standard.<br><br>
+                He became lethargic, cared little about deadlines, <span class="highlight">failed his examinations</span>, and lost his top rank.
+            </div>
+        </div>
+
+        <div class="scene" data-color="255, 150, 0">
+            <div class="cartoon-icon">🗣️💬</div>
+            <div class="text-content">
+                Everyone said that he had gotten <span class="highlight">distracted.</span><br><br>
+                Or that he had gotten into a relationship.
+            </div>
+        </div>
+
+        <div class="scene" data-color="0, 200, 255">
+            <div class="cartoon-icon">🧩⚡</div>
+            <div class="text-content">
+                But the truth was completely upside down.<br><br>
+                The reason for his downfall was not his distractions.<br><br>
+                The reason was his <span class="highlight">ADHD.</span>
+            </div>
+        </div>
+
+        <div class="scene" data-color="255, 215, 0">
+            <div class="cartoon-icon">🏆🎤</div>
+            <div class="text-content">
+                This point became perfectly clear when he <span class="highlight">won a public speaking tournament</span> against eight different schools.<br><br>
+                So, what is the role of ADHD here?
+            </div>
+        </div>
+
+        <div class="scene" data-color="0, 150, 255">
+            <div class="cartoon-icon">🎯♾️</div>
+            <div class="text-content">
+                Before 10th standard, he had a clear target and a <span class="highlight">finite</span> amount of work.<br><br>
+                During 10th, he faced work that never seemed to finish. And an ADHD brain prefers tasks with a finite starting and ending point.
+            </div>
+        </div>
+
+        <div class="scene" data-color="255, 0, 255">
+            <div class="cartoon-icon">🧬🔌</div>
+            <div class="text-content">
+                He had been burdened with allegations of distraction...<br><br>
+                But the truth was simply his <span class="highlight">nerve wiring.</span><br><br>
+                This is just one among many similar incidents in an ADHD person's life.
+            </div>
+        </div>
+
+        <div class="scene" data-color="255, 100, 150">
+            <div class="cartoon-icon">🛡️💪</div>
+            <div class="text-content">
+                <span class="highlight">1. Short-term Solution:</span><br><br>
+                An ADHD person must be aware of their neurodivergence and seek help if needed. They must develop coping methods and lead their life with courage.
+            </div>
+        </div>
+
+        <div class="scene" data-color="100, 200, 255">
+            <div class="cartoon-icon">🌍📚</div>
+            <div class="text-content">
+                <span class="highlight">2. Long-term Solution:</span><br><br>
+                All students across the globe must develop an awareness of personalities, psychology, and most importantly, emotional intelligence.
+            </div>
+        </div>
+
+        <div class="scene" data-color="255, 255, 255">
+            <div class="cartoon-icon">✨🤝</div>
+            <div class="text-content">
+                In essence...<br><br>
+                ADHD people have a lot of <span class="highlight">potential</span>.<br><br>
+                But they also feel a lot of isolation in this modern society.
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // DOM Elements
+        const scenes = document.querySelectorAll('.scene');
+        const topLight = document.getElementById('topLight');
+        const bottomLight = document.getElementById('bottomLight');
+        const particleLayer = document.getElementById('particles');
+
+        // Dynamic Lighting System based on Scene Scroll
+        const observerOptions = {
+            root: document.getElementById('container'),
+            threshold: 0.55 // Trigger when over half the scene is visible
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Reveal text and cartoon
+                    entry.target.classList.add('visible');
+
+                    // Update Ambient Lighting colors dynamically
+                    const rgb = entry.target.getAttribute('data-color');
+                    topLight.style.background = `radial-gradient(circle, rgba(${rgb}, 0.25) 0%, rgba(0,0,0,0) 70%)`;
+                    bottomLight.style.background = `radial-gradient(circle, rgba(${rgb}, 0.15) 0%, rgba(0,0,0,0) 70%)`;
+
+                    // Update highlight colors in the current scene to match lighting
+                    const highlights = entry.target.querySelectorAll('.highlight');
+                    highlights.forEach(h => {
+                        h.style.color = `rgb(${rgb})`;
+                        h.style.textShadow = `0 0 15px rgba(${rgb}, 0.6)`;
+                    });
+                }
+            });
+        }, observerOptions);
+
+        scenes.forEach(scene => observer.observe(scene));
+
+        // Initial setup for the first scene
+        setTimeout(() => scenes[0].classList.add('visible'), 150);
+
+        // Interactive "Cartoon" Background Particles Engine
+        const emojis = ['🧠', '✨', '🎯', '⚡', '💡', '🧩', '📈'];
+
+        function createFloatingEmoji() {
+            const emojiEl = document.createElement('div');
+            emojiEl.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            emojiEl.className = 'floating-emoji';
+
+            // Randomize position and scale
+            const startPosX = Math.random() * 100;
+            const scale = Math.random() * 0.5 + 0.6;
+
+            emojiEl.style.left = `${startPosX}%`;
+            emojiEl.style.fontSize = `${scale * 2}rem`;
+
+            particleLayer.appendChild(emojiEl);
+
+            // Clean up DOM after animation finishes
+            setTimeout(() => emojiEl.remove(), 7000);
+        }
+
+        // Generate ambient floating emojis periodically
+        setInterval(createFloatingEmoji, 2000);
+    </script>
+</body>
+</html>

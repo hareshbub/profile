@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haresh G - Premium Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #030712;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --accent-1: #00f2fe;
+            --accent-2: #4facfe;
+            --accent-3: #f093fb;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-glow: rgba(0, 242, 254, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body, html {
+            height: 100%;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow: hidden; /* Handled by scroll-container */
+        }
+
+        /* --- ANIMATED BACKGROUND BLOBS --- */
+        .background-blobs {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            background: #030712;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.6;
+            animation: float 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .blob-1 {
+            width: 40vw; height: 40vw;
+            background: radial-gradient(circle, var(--accent-1), transparent 70%);
+            top: -10%; left: -10%;
+        }
+
+        .blob-2 {
+            width: 35vw; height: 35vw;
+            background: radial-gradient(circle, var(--accent-3), transparent 70%);
+            bottom: -10%; right: -10%;
+            animation-delay: -5s;
+        }
+
+        .blob-3 {
+            width: 30vw; height: 30vw;
+            background: radial-gradient(circle, var(--accent-2), transparent 70%);
+            top: 40%; left: 40%;
+            animation-duration: 25s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(10%, 15%) scale(1.2); }
+            100% { transform: translate(-10%, 5%) scale(0.9); }
+        }
+
+        /* --- SCROLLING LOGIC --- */
+        .scroll-container {
+            height: 100vh;
+            overflow-y: auto;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        section {
+            min-height: 100vh;
+            width: 100%;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* --- TYPOGRAPHY & REVEALS --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1 {
+            font-size: 6rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
+        }
+
+        .profession {
+            font-size: 1.8rem;
+            color: var(--accent-1);
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            margin-bottom: 4rem;
+            font-weight: 800;
+            text-align: center;
+            background: linear-gradient(to right, #fff, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- PAGE 1: HERO --- */
+        .hero-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .scroll-cta {
+            position: absolute;
+            bottom: 50px;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            transition: color 0.3s;
+        }
+
+        .scroll-cta:hover { color: #fff; }
+        .scroll-cta span {
+            width: 30px; height: 50px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 50px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+        .scroll-cta span::before {
+            content: '';
+            position: absolute;
+            width: 4px; height: 10px;
+            background: var(--accent-1);
+            border-radius: 4px;
+            top: 10px;
+            animation: scrollWheel 2s infinite;
+        }
+
+        @keyframes scrollWheel {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(20px); opacity: 0; }
+        }
+
+        /* --- PAGE 2: 3D CARDS --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            perspective: 1000px;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 220px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 30px 40px rgba(0,0,0,0.4);
+            transform-style: preserve-3d;
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        /* Card Hover Glow Effect */
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), var(--glass-glow), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .card:hover::before { opacity: 1; }
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 30px 60px rgba(0, 242, 254, 0.1);
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 1;
+            transform: translateZ(30px); /* Pushes content out in 3D space */
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .btn:hover::after { left: 100%; }
+        .btn:hover {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+            box-shadow: 0 0 20px rgba(255,255,255,0.4);
+        }
+
+        /* --- PAGE 3: CONTACT --- */
+        .contact-container {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 4rem;
+            border-radius: 30px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .contact-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.02);
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .contact-item:hover {
+            transform: translateX(10px);
+            background: rgba(255,255,255,0.05);
+            border-color: var(--accent-1);
+        }
+
+        .contact-label {
+            font-weight: 300;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+        }
+
+        .contact-value {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: text-shadow 0.3s;
+        }
+
+        .contact-item:hover .contact-value {
+            text-shadow: 0 0 15px var(--accent-1);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            h1 { font-size: 3.5rem; }
+            .profession { font-size: 1.2rem; }
+            .section-title { font-size: 2.2rem; margin-bottom: 2rem; }
+            .contact-container { padding: 2rem; }
+            .contact-item { flex-direction: column; gap: 0.8rem; align-items: flex-start; }
+            .card { transform: none !important; } /* Disable 3D tilt on mobile */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="scroll-container">
+
+        <section id="page1">
+            <div class="hero-content reveal active">
+                <h1>HARESH G</h1>
+                <div class="profession">content writter&public speaker</div>
+            </div>
+            <a href="#page2" class="scroll-cta reveal active">
+                Scroll to see proofs
+                <span></span>
+            </a>
+        </section>
+
+        <section id="page2">
+            <h2 class="section-title reveal">Proofs & Perspectives</h2>
+            <div class="grid-container reveal">
+                <div class="card">
+                    <div class="card-content">
+                        <h3>Importance of Public Speaking</h3>
+                        <a href="A.html" target="_blank" rel="noopener noreferrer" class="btn">View Proof</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <h3>5 Productivity Myths That Are Actually Killing Your Efficiency</h3>
+                        <a href="B.html" target="_blank" rel="noopener noreferrer" class="btn">View Proof</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <h3>The Value of Time</h3>
+                        <a href="C.html" target="_blank" rel="noopener noreferrer" class="btn">View Proof</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <h3>Value of Loyalty</h3>
+                        <a href="D.html" target="_blank" rel="noopener noreferrer" class="btn">View Proof</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <h3>Toxic Behaviors of Humans That Can't Be Accepted</h3>
+                        <a href="E.html" target="_blank" rel="noopener noreferrer" class="btn">View Proof</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <h3>ADHD and its Effects on Social Interactions</h3>
+                        <a href="F.html" target="_blank" rel="noopener noreferrer" class="btn">View Proof</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="page3">
+            <div class="contact-container reveal">
+                <h2 class="section-title" style="margin-bottom: 2rem;">Let's Connect</h2>
+                <ul class="contact-list">
+                    <li class="contact-item">
+                        <span class="contact-label">Email</span>
+                        <a href="mailto:hareshmec@gmail.com" class="contact-value">hareshmec@gmail.com</a>
+                    </li>
+                    <li class="contact-item">
+                        <span class="contact-label">Phone</span>
+                        <a href="tel:+919360015504" class="contact-value">9360015504</a>
+                    </li>
+                    <li class="contact-item">
+                        <span class="contact-label">LinkedIn</span>
+                        <span class="contact-value">Dv.Haresh</span>
+                    </li>
+                    <li class="contact-item">
+                        <span class="contact-label">Instagram</span>
+                        <span class="contact-value">@hastyharesh06</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // 1. Intersection Observer for fade-up reveals on scroll
+        const observerOptions = {
+            root: document.querySelector('.scroll-container'),
+            threshold: 0.3
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+        // 2. 3D Tilt and Mouse Tracking for Cards (Desktop Only)
+        if (window.innerWidth > 768) {
+            document.querySelectorAll('.card').forEach(card => {
+                card.addEventListener('mousemove', e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left; // x position within the element
+                    const y = e.clientY - rect.top;  // y position within the element
+
+                    // Update CSS variables for the radial gradient glow effect
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+
+                    // Calculate rotation for 3D tilt
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -10; // Max rotation 10deg
+                    const rotateY = ((x - centerX) / centerX) * 10;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    // Reset transform when mouse leaves
+                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                });
+            });
+        }
+    </script>
+</body>
+</html>
